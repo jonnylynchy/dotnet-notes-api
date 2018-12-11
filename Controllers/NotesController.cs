@@ -52,7 +52,6 @@ namespace dotnet_notes_api.Controllers
         }
 
         // POST api/notes
-        // *** NEW CODE HERE ***
         [HttpPost]
         public ActionResult<Note> Post([FromBody] Note note)
         {

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using LiteDB;
 /*
-This is the note model for use in application.
+This is the main scratch model for use in application.
 */
 namespace dotnet_notes_api.Models
 {
