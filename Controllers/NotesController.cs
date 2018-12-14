@@ -17,36 +17,49 @@ using Microsoft.AspNetCore.Cors;
 */
 namespace dotnet_notes_api.Controllers
 {
+    // The whole application serves an api at /api/notes/
     [Route("api/[controller]")]
+    // This enables cross-domain origin requests so I can test with a different url/domain
     [EnableCors("AllowAllOrigins")]
+    // Marks this as an API controller
     [ApiController]
     public class NotesController : ControllerBase
     {
+        // This sets up our initial connection string to the LiteDB database
         ConnectionString connectionString = new ConnectionString("NotesDB.db")
         {
             Mode = LiteDB.FileMode.Exclusive
         };
 
         // GET api/notes
+        // This route gets all notes and returns them as JSON
         [HttpGet]
         public ActionResult<IEnumerable<Note>> Get()
         {
+            // Connect to database
             using(var db = new LiteDatabase(connectionString))  
             {
+                // Get all notes
                 var notes = db.GetCollection<Note>("notes");
+                // Order notes by created data
                 var allNotes = notes.FindAll().OrderBy(note => note.CreatedAt).ToList();
 
+                // return all notes
                 return allNotes;
             }
         }
 
         // GET api/notes/5
+        // finds and returns a particular note
         [HttpGet("{id}")]
         public ActionResult<Note> Get(Guid id)
         {
+            // connect to database
             using(var db = new LiteDatabase(connectionString))  
             {
+                // get notes collection
                 var notes = db.GetCollection<Note>("notes");
+                // find and return a particular note by id
                 return notes.FindById(id);
             }
         }
@@ -105,6 +118,7 @@ namespace dotnet_notes_api.Controllers
                 // get notes collection
                 var notes = db.GetCollection<Note>("notes");
 
+                // find the note to update.
                 var noteToUpdate = notes.FindById(id);
                 noteToUpdate.NoteText = note.NoteText;
                 // get the note that was passed
@@ -113,6 +127,7 @@ namespace dotnet_notes_api.Controllers
         }
 
         // DELETE api/notes/5
+        // this route finds and deletes a note that was passed by id
         [HttpDelete("{id}")]
         public void Delete(Guid id)
         {
